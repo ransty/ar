@@ -119,4 +119,38 @@ public class InputHandler : MonoBehaviour
             m_itemPicked = false;
         }
     }
+
+    public void CopyObject()
+    {
+        if (m_itemPicked)
+        {
+            GameObject copy = m_itemHolder.GetChild(0).gameObject;
+            if (copy)
+                Instantiate(copy, copy.transform.position, copy.transform.rotation);
+        }
+    }
+
+    public void ScaleUpObject()
+    {
+        if (m_itemPicked)
+        {
+            GameObject obj = m_itemHolder.GetChild(0).gameObject;
+            if (obj)
+            {
+                obj.transform.localScale += new Vector3(0.05f, 0.05f, 0.05f);
+            }
+        }
+    }
+
+    public void ScaleDownObject()
+    {
+        if (m_itemPicked)
+        {
+            GameObject obj = m_itemHolder.GetChild(0).gameObject;
+            if (obj)
+            {
+                obj.transform.localScale -= new Vector3(0.05f, 0.05f, 0.05f);
+            }
+        }
+    }
 }
