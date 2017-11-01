@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
@@ -10,8 +11,25 @@ public class InputHandler : MonoBehaviour
     private Vector2 m_MouseDownPosition;
     private Vector2 m_MouseUpPosition;
     private float m_LastMouseUpTime;
-
+    public bool group = false;
     bool m_itemPicked = false;
+
+    GameObject Shapes;
+    GameObject Textures;
+    GameObject[] shapeList;
+
+    private void Awake()
+    {
+        Shapes = GameObject.Find("Shapes");
+        shapeList = GameObject.FindGameObjectsWithTag("ShapeTemplate");
+        Textures = GameObject.Find("Textures");
+        Textures.SetActive(false);
+    }
+
+    void OnGUI()
+    {
+        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), "Group = " + group + "\nChild Count: " + m_itemHolder.childCount);
+    }
 
     void Update()
     {
@@ -91,18 +109,28 @@ public class InputHandler : MonoBehaviour
         {
             GameObject obj = m_itemHolder.GetChild(0).gameObject;
             if (obj)
+            {
                 obj.GetComponent<MeshRenderer>().material = gameObj.GetComponent<MeshRenderer>().material;
+            }
         }
+
+        if (group)
+        {
+            foreach(GameObject shape in shapeList)
+            {
+                shape.GetComponent<MeshRenderer>().material = gameObj.GetComponent<MeshRenderer>().material;
+            }
+        }
+
     }
 
     void HandleInteractive(GameObject gameObj)
     {
-        if (m_itemPicked) //picked up
+        if (m_itemPicked && !group) //picked up
         {
             gameObj.transform.SetParent(m_sceneSpace);
             m_itemPicked = false;
-        }
-        else
+        }else
         {
             gameObj.transform.SetParent(m_itemHolder);
             m_itemPicked = true;
@@ -111,46 +139,56 @@ public class InputHandler : MonoBehaviour
 
     public void DeleteObject()
     {
-        if (m_itemPicked)
+        if (m_itemPicked && !group)
         {
             GameObject obj = m_itemHolder.GetChild(0).gameObject;
-            if(obj)
+            if (obj)
                 Destroy(obj);
             m_itemPicked = false;
+        }
+
+        if (m_itemPicked && group) // group copy
+        {
+            for (int i = 0; i < m_itemHolder.childCount; i++)
+            {
+                GameObject go = m_itemHolder.GetChild(i).gameObject;
+                if (go)
+                    Destroy(go);
+            }
         }
     }
 
     public void CopyObject()
     {
-        if (m_itemPicked)
+        if (m_itemPicked && !group)
         {
             GameObject copy = m_itemHolder.GetChild(0).gameObject;
             if (copy)
                 Instantiate(copy, copy.transform.position, copy.transform.rotation);
+            m_itemPicked = false;
         }
-    }
 
-    public void ScaleUpObject()
-    {
-        if (m_itemPicked)
+        if (m_itemPicked && group) // group copy
         {
-            GameObject obj = m_itemHolder.GetChild(0).gameObject;
-            if (obj)
+            for (int i = 0; i < m_itemHolder.childCount; i++)
             {
-                obj.transform.localScale += new Vector3(0.05f, 0.05f, 0.05f);
+                GameObject go = m_itemHolder.GetChild(i).gameObject;
+                if (go)
+                    Instantiate(go, go.transform.position, go.transform.rotation);
             }
         }
     }
 
-    public void ScaleDownObject()
+    public void DropAllObject()
     {
-        if (m_itemPicked)
+        foreach (Transform child in m_itemHolder)
         {
-            GameObject obj = m_itemHolder.GetChild(0).gameObject;
-            if (obj)
-            {
-                obj.transform.localScale -= new Vector3(0.05f, 0.05f, 0.05f);
-            }
+            child.parent = m_sceneSpace;
         }
+    }
+
+    public void SetGroup()
+    {
+        group = !group;
     }
 }
