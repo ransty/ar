@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InputHandler : MonoBehaviour
 {
@@ -126,7 +127,7 @@ public class InputHandler : MonoBehaviour
 
     void HandleInteractive(GameObject gameObj)
     {
-        if (m_itemPicked && !group) //picked up
+        if (m_itemPicked) //picked up
         {
             gameObj.transform.SetParent(m_sceneSpace);
             m_itemPicked = false;
@@ -181,14 +182,29 @@ public class InputHandler : MonoBehaviour
 
     public void DropAllObject()
     {
-        foreach (Transform child in m_itemHolder)
+        if (group)
         {
-            child.parent = m_sceneSpace;
+            for (int i = m_itemHolder.childCount - 1; i >= 0; --i)
+            {
+                Transform child = m_itemHolder.GetChild(i);
+                child.SetParent(m_sceneSpace);
+            }
+        } else
+        {
+            m_itemHolder.GetChild(0).SetParent(m_sceneSpace);
         }
     }
 
     public void SetGroup()
     {
         group = !group;
+        Image gButton = GameObject.FindGameObjectWithTag("GroupButton").GetComponent<Image>();
+        if (group)
+        {
+            gButton.color = new Color32(255, 255, 225, 100);
+        } else
+        {
+            gButton.color = new Color32(26, 179, 255, 203);
+        }
     }
 }
