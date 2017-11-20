@@ -145,6 +145,7 @@
     <Compile Include="Assets\Vuforia\Editor\Scripts\Unzipper\SharpZipLibUnzipper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\ColorPickerTriangle\Shaders\VertexColor.shader" />
     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
     <None Include="Assets\StreamingAssets\QCAR\ARClass.xml" />
     <None Include="Assets\Vuforia\Editor\Scripts\Vuforia.UnityExtensions.Editor.XML" />
