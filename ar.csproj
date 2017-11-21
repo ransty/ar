@@ -86,7 +86,6 @@
   <ItemGroup>
     <Compile Include="Assets\ColorPickerTriangle\Example\example.cs" />
     <Compile Include="Assets\ColorPickerTriangle\Scripts\ColorPickerTriangle.cs" />
-    <Compile Include="Assets\ColourChange.cs" />
     <Compile Include="Assets\LeanTouch\Examples\SimpleDrag.cs" />
     <Compile Include="Assets\LeanTouch\Examples\SimpleInfo.cs" />
     <Compile Include="Assets\LeanTouch\Examples\SimpleMove.cs" />
@@ -101,10 +100,14 @@
     <Compile Include="Assets\LeanTouch\Examples\SimpleZoom.cs" />
     <Compile Include="Assets\LeanTouch\Scripts\LeanFinger.cs" />
     <Compile Include="Assets\LeanTouch\Scripts\LeanTouch.cs" />
+    <Compile Include="Assets\Resources\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
+    <Compile Include="Assets\SceneSpaceColour.cs" />
+    <Compile Include="Assets\Scripts\ColourChange.cs" />
     <Compile Include="Assets\Scripts\InputHandler.cs" />
     <Compile Include="Assets\Scripts\PinchZoom.cs" />
     <Compile Include="Assets\Scripts\Rotate.cs" />
     <Compile Include="Assets\Scripts\VBTabHandler.cs" />
+    <Compile Include="Assets\SoloColourChange.cs" />
     <Compile Include="Assets\Vuforia\Scripts\BackgroundPlaneBehaviour.cs" />
     <Compile Include="Assets\Vuforia\Scripts\CloudRecoBehaviour.cs" />
     <Compile Include="Assets\Vuforia\Scripts\CylinderTargetBehaviour.cs" />

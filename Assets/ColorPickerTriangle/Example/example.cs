@@ -9,7 +9,7 @@ public class example : MonoBehaviour {
     private GameObject go;
     private Material mat;
 
-    void Start()
+    void Awake()
     {
         mat = GetComponent<MeshRenderer>().material;
     }
@@ -34,10 +34,10 @@ public class example : MonoBehaviour {
         }
     }
 
-    private void StartPaint()
+    public void StartPaint()
     {
-        go = (GameObject)Instantiate(ColorPickedPrefab, transform.position + Vector3.up * 1.1f, Quaternion.identity);
-        go.transform.localScale = Vector3.one * 1.1f;
+        go = (GameObject)Instantiate(ColorPickedPrefab, transform.position + Vector3.up, Quaternion.identity);
+        go.transform.localScale = Vector3.one;
         go.transform.LookAt(Camera.main.transform);
         CP = go.GetComponent<ColorPickerTriangle>();
         CP.SetNewColor(mat.color);

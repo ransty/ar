@@ -15,9 +15,24 @@ public class InputHandler : MonoBehaviour
     public bool group = false;
     bool m_itemPicked = false;
 
+    public GameObject slider;
+    public GameObject rotate;
+    public Color color;
+    public GameObject rslider;
+    public GameObject gslider;
+    public GameObject bslider;
+
+    private bool xAxis = true;
+    private bool yAxis = false;
+    private bool zAxis = false;
+
+    private float objScale = 0;
+
     GameObject Shapes;
     GameObject Textures;
     GameObject[] shapeList;
+
+    private GUIStyle style;
 
     private void Awake()
     {
@@ -25,17 +40,98 @@ public class InputHandler : MonoBehaviour
         shapeList = GameObject.FindGameObjectsWithTag("ShapeTemplate");
         Textures = GameObject.Find("Textures");
         Textures.SetActive(false);
+        style = new GUIStyle();
     }
 
-    void OnGUI()
+    void OnGUI() // These functions don't really work well on phone screens
     {
-        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), "Group = " + group + "\nChild Count: " + m_itemHolder.childCount);
+        style.fontSize = 30;
+        style.normal.textColor = Color.white;
+        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), "Group = " + group + "\nChild Count: " + m_itemHolder.childCount, style);
+
     }
 
     void Update()
     {
         CheckInput();
+
+        // Scale
+        if (m_itemPicked)
+        {
+            GameObject obj = m_itemHolder.GetChild(0).gameObject;
+            obj.transform.localScale = new Vector3(slider.GetComponent<Slider>().value, slider.GetComponent<Slider>().value, slider.GetComponent<Slider>().value);
+        }
+
+        // Rotate
+        if (m_itemPicked)
+        {
+            GameObject obj = m_itemHolder.GetChild(0).gameObject;
+            if (xAxis)
+            {
+                obj.transform.eulerAngles = new Vector3(rotate.GetComponent<Slider>().value, 0, 0);
+            } else if (yAxis)
+            {
+                obj.transform.eulerAngles = new Vector3(0, rotate.GetComponent<Slider>().value, 0);
+            } else if (zAxis)
+            {
+                obj.transform.eulerAngles = new Vector3(0, 0, rotate.GetComponent<Slider>().value);
+            }
+        }
+
+        // Single Colour Picker
+        if (!group)
+        {
+            color = new Color(rslider.GetComponent<Slider>().value, gslider.GetComponent<Slider>().value, bslider.GetComponent<Slider>().value);
+            if (m_itemPicked) //destroy object in hand first
+            {
+                m_itemHolder.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.color = color;
+            }
+        }
     }
+
+    /*
+     * 
+     * Change to x axis for rotation
+     */
+    public void ChangeToXAxis()
+    {
+        xAxis = true;
+        yAxis = false;
+        zAxis = false;
+        // Set rotate text to (X)
+        GameObject text = GameObject.FindGameObjectWithTag("RotateText");
+        text.GetComponent<Text>().text = "(X) Rotate";
+    }
+
+    /*
+    * 
+    * Change to y axis for rotation
+    */
+    public void ChangeToYAxis()
+    {
+        xAxis = false;
+        yAxis = true;
+        zAxis = false;
+        // Set rotate text to (Y)
+        GameObject text = GameObject.FindGameObjectWithTag("RotateText");
+        text.GetComponent<Text>().text = "(Y) Rotate";
+    }
+
+    /*
+    * 
+    * Change to z axis for rotation
+    */
+    public void ChangeToZAxis()
+    {
+        xAxis = false;
+        yAxis = false;
+        zAxis = true;
+        // Set rotate text to (Z)
+        GameObject text = GameObject.FindGameObjectWithTag("RotateText");
+        text.GetComponent<Text>().text = "(Z) Rotate";
+    }
+
+
     private void CheckInput()
     {
 
@@ -111,15 +207,15 @@ public class InputHandler : MonoBehaviour
             GameObject obj = m_itemHolder.GetChild(0).gameObject;
             if (obj)
             {
-                obj.GetComponent<MeshRenderer>().material = gameObj.GetComponent<MeshRenderer>().material;
+                obj.GetComponent<MeshRenderer>().material.mainTexture = gameObj.GetComponent<MeshRenderer>().material.mainTexture;
             }
         }
 
         if (group)
         {
-            foreach(GameObject shape in shapeList)
+            foreach (GameObject shape in shapeList)
             {
-                shape.GetComponent<MeshRenderer>().material = gameObj.GetComponent<MeshRenderer>().material;
+                shape.GetComponent<MeshRenderer>().material.mainTexture = gameObj.GetComponent<MeshRenderer>().material.mainTexture;
             }
         }
 
@@ -131,7 +227,8 @@ public class InputHandler : MonoBehaviour
         {
             gameObj.transform.SetParent(m_sceneSpace);
             m_itemPicked = false;
-        }else
+        }
+        else
         {
             gameObj.transform.SetParent(m_itemHolder);
             m_itemPicked = true;
@@ -189,9 +286,19 @@ public class InputHandler : MonoBehaviour
                 Transform child = m_itemHolder.GetChild(i);
                 child.SetParent(m_sceneSpace);
             }
-        } else
+        }
+        else
         {
             m_itemHolder.GetChild(0).SetParent(m_sceneSpace);
+        }
+    }
+
+    public void ScaleObject()
+    {
+        for (int i = m_itemHolder.childCount - 1; i >= 0; i--)
+        {
+            Transform child = m_itemHolder.GetChild(i);
+            child.localScale += new Vector3(0, 1, 0);
         }
     }
 
@@ -202,7 +309,8 @@ public class InputHandler : MonoBehaviour
         if (group)
         {
             gButton.color = new Color32(255, 255, 225, 100);
-        } else
+        }
+        else
         {
             gButton.color = new Color32(26, 179, 255, 203);
         }
